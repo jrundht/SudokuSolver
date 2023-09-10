@@ -18,7 +18,11 @@ public class Grid{
     }
 
     public Cell getCell(int i, int j){
-        return cells[i][j];
+        if (i >= 0 && i < rows*cols && j >= 0 && j < rows*cols) {
+            return cells[i][j];
+        } else {
+            throw new IndexOutOfBoundsException("Invalid cell indices: " + i + ", " + j);
+        }
     }
 
     @Override

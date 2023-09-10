@@ -1,9 +1,9 @@
 public class Cell{
     private char value;
 
-    private Row thisRow;
-    private Column thisColumn;
-    private Box thisBox;
+    private Row thisRow = null;
+    private Column thisColumn = null;
+    private Box thisBox = null;
 
     Cell(char v){
         value = v;
@@ -25,7 +25,6 @@ public class Cell{
 
     @Override
     public String toString(){
-        // if(value == '.') value = ' ';
         String s = "" + value;
         return s;
     }
