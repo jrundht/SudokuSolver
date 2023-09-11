@@ -64,7 +64,7 @@ public class Sudoku {
 
     public void setColumns() {
         columns = new Column[numRows * numColumns];
-        System.out.println("Columns:");
+        // System.out.println("Columns:");
         
         for(int i = 0; i < numRows*numColumns; i++){
             columns[i] = new Column();
@@ -73,7 +73,7 @@ public class Sudoku {
                 oneCell.setColumn(columns[i]);
                 columns[i].addCell(oneCell.getValue());
             }
-            System.out.println(i + ": " + columns[i].toString());
+            // System.out.println(i + ": " + columns[i].toString());
         }
     }
 
@@ -82,6 +82,7 @@ public class Sudoku {
         for (int boxNum = 0; boxNum < numRows * numColumns; boxNum++) {
             boxes[boxNum] = new Box();
             
+            //find the top left corner of each box
             int boxRow = (boxNum / numRows) * numRows; 
             int boxCol = (boxNum % numRows) * numColumns;
 
@@ -92,13 +93,12 @@ public class Sudoku {
                     boxes[boxNum].addCell(oneCell.getValue());
                 }
             }
-            
-            System.out.println(boxes[boxNum].toString());
+            // System.out.println(boxes[boxNum].toString());
         }
     }
 
     public void createDataStructure(){
-        // setColumns();
+        setColumns();
         setBoxes();
     }
 
@@ -111,5 +111,10 @@ public class Sudoku {
         }
         System.out.println(sudoku.grid);
         sudoku.createDataStructure();
+        // ArrayList<Character> pos = sudoku.grid.getCell(0,2).findAllPossibilities();
+        // for(char c:pos){
+        //     System.out.print(c + " ");
+        // }
+        // System.out.println();
     }
 }

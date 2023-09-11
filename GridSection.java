@@ -3,6 +3,10 @@ import java.util.ArrayList;
 public class GridSection {
     ArrayList<Character> cells = new ArrayList<>();
 
+    public int getSize(){
+        return cells.size();
+    }
+
     public boolean checkValue(char value){
         for(char v : cells){
             if(v == value) return true;
@@ -19,6 +23,13 @@ public class GridSection {
         }else{
             cells.add('.');
         }
+    }
+
+    public boolean valueInSection(char value){
+        for(char v : cells){
+            if(v == value) return true;
+        }
+        return false;
     }
 
     @Override
