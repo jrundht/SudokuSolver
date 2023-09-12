@@ -1,7 +1,7 @@
 public class Grid{
-    Cell[][] cells;
-    int rows;
-    int cols;
+    private Cell[][] cells;
+    private int rows;
+    private int cols;
 
     Grid(int row, int col){
         cells = new Cell[row*col][row*col];
@@ -11,6 +11,18 @@ public class Grid{
 
     public void addCell(Cell cell, int i, int j){
         cells[i][j] = cell;
+    }
+
+    public void linkCells(){
+        for(int i = 0; i < rows*cols; i++){
+            for(int j = 0; j < rows*cols; j++){
+                if (j == rows*cols - 1 && i != rows*cols - 1) {
+                    cells[i][j].next = cells[i + 1][0];
+                } else if (j < rows*cols - 1) {
+                    cells[i][j].next = cells[i][j + 1];
+                }
+            }
+        }
     }
     
     public void addCellArray(Cell[] oneArray, int index){
