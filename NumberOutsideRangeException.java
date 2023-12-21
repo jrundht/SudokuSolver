@@ -1,5 +1,5 @@
 public class NumberOutsideRangeException extends Exception{
-    NumberOutsideRangeException(int n){
-        super("Only numbers in range 1 to " + n);
+    NumberOutsideRangeException(char c , int n){
+        super("Character: "+ c + " outside range, only characters in range 1 to " + n);
     }
 }

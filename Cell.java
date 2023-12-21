@@ -1,19 +1,29 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Cell{
     private char value;
-
+    private Cell next = null;
     private Row thisRow = null;
     private Column thisColumn = null;
     private Box thisBox = null;
 
-    Cell(char v){
+    Cell(char v) {
+
         value = v;
     }
 
     public char getValue(){
         return value;
     }
+
+    public void setValue(char v){
+        value = v;
+    }
+
+    public void setNext(Cell nextCell) { next = nextCell; }
+
+    public Cell next(){ return next; }
 
     public void setRow(Row r){
         thisRow = r;
@@ -25,25 +35,58 @@ public class Cell{
         thisBox = b;
     }
 
-    public ArrayList<Character> findAllPossibilities(){
-        ArrayList<Character> possibilities = new ArrayList<>();
+    public boolean charNotInSection(char v){
+        return !thisBox.valueInSection(v) &&
+            !thisRow.valueInSection(v) &&
+            !thisColumn.valueInSection(v);
+    }
+
+    public HashSet<Character> findAllPossibilities(){
+        HashSet<Character> possibilities = new HashSet <>();
         if(value != '.') return possibilities;
         int gridDim = thisBox.getSize();
 
-        String allowedChars = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String validCharsForGrid = allowedChars.substring(0, gridDim);
+        String legalChars = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String validCharsForGrid = legalChars.substring(0, gridDim);
 
-        for(char value : validCharsForGrid.toCharArray()){
-            if(!thisBox.valueInSection(value) && !thisRow.valueInSection(value) && !thisColumn.valueInSection(value)){
-                possibilities.add(value);
+        for(char v : validCharsForGrid.toCharArray()){
+            if(charNotInSection(v)){
+                possibilities.add(v);
             }
         }
         return possibilities;
     }
 
-    public void fillThisCellAndTheRest(){
-        ArrayList<Character> possibilities = findAllPossibilities();
+    void printSections(){
+        System.out.println(thisRow.cells);
+        System.out.println(thisColumn.cells);
+        System.out.println(thisBox.cells);
+    }
+
+    //Brute force method
+    public boolean fillThisCellAndTheRest(){
+        var possibilities = findAllPossibilities();
         
+        if(value != '.'){
+            if(next == null) return true;
+            return next.fillThisCellAndTheRest();
+        }
+
+        for(char v : possibilities){
+            if(charNotInSection(v)){
+                setValue(v);
+                if(next == null){
+                    return true;
+                }
+
+                if(next.fillThisCellAndTheRest()){
+                    return true;
+                }else{
+                    value = '.';
+                }
+            }
+        }
+        return false;
     }
 
     @Override

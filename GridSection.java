@@ -9,9 +9,9 @@ public class GridSection {
     }
 
     public void addCell(Cell cell){
-            myCells.add(cell);
+        cells.add(cell.getValue());
+        myCells.add(cell);
     }
-
 
     public boolean valueInSection(char value){
         for(Cell c : myCells){
