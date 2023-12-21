@@ -6,14 +6,14 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Sudoku {
-    Grid grid;
-    Row[] rows;
-    Column[] columns;
-    Box[] boxes;
-    int numRows, numColumns;
+    private static Grid grid;
+    private static Row[] rows;
+    private static Column[] columns;
+    private static Box[] boxes;
+    private static int numRows, numColumns;
 
 
-    public void readFile(String filename) throws CharCountMismatchException{
+    public static void readFile(String filename) throws CharCountMismatchException, NumberOutsideRangeException{
         Scanner scanner = null;
         File file = new File(filename);
         String content = null;
@@ -28,10 +28,10 @@ public class Sudoku {
         numRows = Integer.parseInt(scanner.nextLine());
         numColumns = Integer.parseInt(scanner.nextLine());
 
-        int expChars = numRows*numRows*numColumns*numColumns + 2 + (numRows*numColumns+1);
+        //num characters in the sudoku + the two dimension characters + newline characters
+        int expChars = 2 + numRows*numRows*numColumns*numColumns + (numRows*numColumns+1);
         try{
             content = new String(Files.readAllBytes(Paths.get(filename)));
-            // System.out.println("Characters in file: " + content.length());
             if(content.length() != expChars){
                 throw new CharCountMismatchException(numRows*numColumns);
             }
@@ -51,70 +51,46 @@ public class Sudoku {
             Cell[] cellRow = new Cell[row.length];
             rows[index] = new Row();
             for(int i = 0; i < row.length; i++){    //setting rows
-                //check if value is valid 
-
+                if((int) row[i] - 56 > numRows*numColumns) throw new NumberOutsideRangeException(row[i], numRows*numColumns);
                 cellRow[i] = new Cell(row[i]);
-                cellRow[i].setRow(rows[index]);     
-                rows[index].addCell(cellRow[i].getValue());
+                //cellRow[i].setRow(rows[index]);
+                //rows[index].addCell(cellRow[i]);
             }
             grid.addCellArray(cellRow, index++);
         }
+        grid.createDataStructure();
         scanner.close();
     }
 
-    public void setColumns() {
-        columns = new Column[numRows * numColumns];
-        // System.out.println("Columns:");
-        
-        for(int i = 0; i < numRows*numColumns; i++){
-            columns[i] = new Column();
-            for(int j = 0; j < numRows*numColumns; j++){
-                Cell oneCell = grid.getCell(j, i);          //get i'th cell from each array
-                oneCell.setColumn(columns[i]);
-                columns[i].addCell(oneCell.getValue());
-            }
-            // System.out.println(i + ": " + columns[i].toString());
+    public static void solveSudoku(){
+        if(grid.getCell(0,0).fillThisCellAndTheRest()){
+            System.out.println("Sudoku solved successfully:");
+            System.out.println(grid);
+        }else{
+            System.out.println("Sudoku is not solvable :/");
         }
     }
 
-    public void setBoxes() {
-        boxes = new Box[numRows * numColumns];
-        for (int boxNum = 0; boxNum < numRows * numColumns; boxNum++) {
-            boxes[boxNum] = new Box();
-            
-            //find the top left corner of each box
-            int boxRow = (boxNum / numRows) * numRows; 
-            int boxCol = (boxNum % numRows) * numColumns;
-
-            for(int i = 0; i < numRows; i++){
-                for(int j = 0; j < numColumns; j++){
-                    Cell oneCell = grid.getCell(boxRow + i, boxCol + j);
-                    oneCell.setBox(boxes[boxNum]);
-                    boxes[boxNum].addCell(oneCell.getValue());
-                }
-            }
-            // System.out.println(boxes[boxNum].toString());
+    public static void printPointers(){
+        Cell cell = grid.getCell(0,0);
+        while (cell != null){
+            System.out.print(cell);
+            cell = cell.next();
         }
-    }
+        System.out.println();
 
-    public void createDataStructure(){
-        setColumns();
-        setBoxes();
     }
 
     public static void main(String[] args){
-        Sudoku sudoku = new Sudoku();
         try {
-            sudoku.readFile(args[0]);
-        } catch (CharCountMismatchException e) {
+            readFile(args[0]);
+        } catch (Exception e){
             e.printStackTrace();
+            System.exit(1);
         }
-        System.out.println(sudoku.grid);
-        sudoku.createDataStructure();
-        // ArrayList<Character> pos = sudoku.grid.getCell(0,2).findAllPossibilities();
-        // for(char c:pos){
-        //     System.out.print(c + " ");
-        // }
-        // System.out.println();
+        System.out.println(grid);
+
+        solveSudoku();
+        System.out.println();
     }
 }
