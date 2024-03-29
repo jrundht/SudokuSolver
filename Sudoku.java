@@ -86,6 +86,7 @@ public class Sudoku {
             readFile(args[0]);
         } catch (Exception e){
             e.printStackTrace();
+            System.err.println("Usage: java Sudoku filename.txt");
             System.exit(1);
         }
         System.out.println(grid);
